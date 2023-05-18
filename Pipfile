@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 pandas = "*"
+pyside6 = "*"
 
 [dev-packages]
 
