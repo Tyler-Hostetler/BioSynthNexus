@@ -6,6 +6,18 @@ import sqlite3
 
 PROJECT_HOME = os.getcwd()
 
+logo = """   ______   _   __   _   __
+  / ____/  / | / /  / | / /
+ / / __   /  |/ /  /  |/ /
+/ /_/ /  / /|  /  / /|  /
+\____/__/_/ |_/  /_/ |_/      __       __             ____  ____
+  / ___/___  ____ ___________/ /_     / /_  __  __   / __ \/ __/___ _____ ___
+  \__ \/ _ \/ __ `/ ___/ ___/ __ \   / __ \/ / / /  / /_/ / /_/ __ `/ __ `__ \\
+ ___/ /  __/ /_/ / /  / /__/ / / /  / /_/ / /_/ /  / ____/ __/ /_/ / / / / / /
+/____/\___/\__,_/_/   \___/_/ /_/  /_.___/\__, /  /_/   /_/  \__,_/_/ /_/ /_/
+                                         /____/
+  """
+print(logo)
 
 class Form(QDialog):
 
@@ -20,7 +32,6 @@ class Form(QDialog):
         self.pfam_lineedit = QLineEdit()
         self.search_button = QPushButton("Search")
         self.output_text = QTextEdit()
-
         self.sql_path = ''
 
         # Create Layout and add widgets
@@ -46,6 +57,9 @@ class Form(QDialog):
 
         self.submit_sql.clicked.connect(self.sql_file_search)
         self.search_button.clicked.connect(self.search_by_pfam)
+        self.search_button.clicked.connect(self.check_search_input)
+
+        self.show()
 
     def sql_file_search(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
@@ -54,14 +68,36 @@ class Form(QDialog):
         self.pfam_lineedit.setEnabled(True)
         self.search_button.setEnabled(True)
 
+    def check_search_input(self):
+        raw_text = self.pfam_lineedit.text()
+        if ',' in raw_text:
+            print('Searching a List of Pfams')
+            self.search_by_pfam_list()
+        else:
+            print('Searching a Single Pfam')
+            self.search_by_pfam()
+
+
     def search_by_pfam(self):
-        output = ''
         pfam_input = (f"%{self.pfam_lineedit.text()}%")
         print(pfam_input)
         accessions = parent_accessions_from_pfam(self.sql_path, pfam_input)
-        for acc in accessions:
-            output += acc + '\n'
-        self.output_text.setText(output)
+        self.fill_output(accessions)
+
+    def search_by_pfam_list(self):
+        pfam_list = self.pfam_lineedit.text()
+        pfam_list = pfam_list.replace(" ", "")
+        search_list = pfam_list.split(',')
+        print(f"List Search Criteria: {search_list}")
+        accessions = parent_accessions_from_pfam_list(self.sql_path, search_list)
+        self.fill_output(accessions)
+
+    def fill_output(self, _output):
+        output_text_string = ''
+        for element in _output:
+            output_text_string += element + '\n'
+        self.output_text.setText(output_text_string)
+
 
 
 def parent_accessions_from_pfam(_sql_path, pfam):
@@ -73,6 +109,27 @@ def parent_accessions_from_pfam(_sql_path, pfam):
     conn.close()
     return [row[0] for row in results]
 
+def parent_accessions_from_pfam_list(_sql_path, pfam_list):
+    # Connects to Sqlite file
+    conn = sqlite3.connect(_sql_path)
+    cur = conn.cursor()
+
+    # Gets all accessions for each Pfam search independently
+    hits = []
+    for pfam in pfam_list:
+        temp_pfam = f"%{pfam}%"
+        cur.execute(get_accession_from_family, (temp_pfam,))
+        temp_results = cur.fetchall()
+        hits.append([row[0] for row in temp_results])
+
+    # Finds matching accessions within all accession lists within hits
+    matches = hits[0]
+    for index in range(len(hits)):
+        matches = set(matches).intersection(hits[index])
+
+    cur.close()
+    conn.close()
+    return matches
 
 get_accession_from_family = """
 							SELECT DISTINCT attributes.accession
@@ -85,5 +142,4 @@ get_accession_from_family = """
 
 app = QApplication(sys.argv)
 form = Form()
-form.show()
 app.exec()
