@@ -8,6 +8,7 @@ pandas = "*"
 pyside6 = "*"
 pip = "*"
 pyinstaller-hooks-contrib = "*"
+requests = "*"
 
 [dev-packages]
 
