@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 pandas = "*"
 pyside6 = "*"
+pip = "*"
+pyinstaller-hooks-contrib = "*"
 
 [dev-packages]
 
