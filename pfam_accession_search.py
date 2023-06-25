@@ -72,7 +72,7 @@ class Form(QDialog):
         inner_layout.addWidget(self.output_type)
         inner_layout.addWidget(self.search_button)
         inner_layout.addWidget(self.use_output)
-        inner_layout.addSpacing(200)
+        #inner_layout.addSpacing(200)
         inner_layout.addWidget(self.save_button)
 
         # x1 = self.status_label.sizeHint().width()
@@ -126,6 +126,7 @@ class Form(QDialog):
         search_input = f"%{self.input_lineedit.text()}%"
         search_input = search_input.replace(" ", "")
         search_input_type = self.input_type.currentText()
+        print(search_input)
         match search_input_type:
             case 'Pfam':
                 output = parent_accessions_from_input(self.sql_path, search_input)
@@ -153,9 +154,16 @@ class Form(QDialog):
             for element in self.current_output:
                 print(f"Requesting: {element} {self.output_type.currentText()}")
                 try:
-                    output.append(upr.uniprot_request(element, self.output_type.currentText()))
+                    temp_out = upr.uniprot_request(element, self.output_type.currentText())
                 except:
-                    output.append('Not Found')
+                    print(f"Request Failed for {element}")
+                    continue
+
+                if self.output_type.currentText() == 'Sequence':
+                    temp_out = f">{element}\n" + temp_out
+
+                output.append(temp_out)
+
             self.fill_output(output)
 
 
