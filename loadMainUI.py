@@ -6,6 +6,7 @@ from PySide6.QtCore import QFile
 from PySide6.QtUiTools import QUiLoader
 import UniProtRequests as upr
 import SqlRequests as sqlr
+import find_similarity
 
 
 class MainUI(QMainWindow):
@@ -44,6 +45,7 @@ class MainUI(QMainWindow):
         self.output_type_combobox = self.window.findChild(QComboBox, 'output_type_combobox')
         self.output_type_combobox.addItems(upr.REQUEST_TYPES)
         self.output_type_combobox.addItems(sqlr.REQUEST_TYPES)
+        self.similarity_button = self.window.findChild(QPushButton, 'similarity_button')
 
         # Note: Use First combobox for a selection between SQL and Uniprot, fill second combobox accordingly
 
@@ -53,6 +55,8 @@ class MainUI(QMainWindow):
         # Search Widget
         self.search_button = self.window.findChild(QPushButton, 'search_button')
 
+
+
         # Save Widget
         self.save_button = self.window.findChild(QPushButton, 'save_button')
 
@@ -61,6 +65,7 @@ class MainUI(QMainWindow):
         self.search_button.clicked.connect(self.search)
         self.save_button.clicked.connect(self.save_output)
         self.output_to_input_button.clicked.connect(self.set_output_to_input)
+        self.similarity_button.clicked.connect()
 
     def sql_upload(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
@@ -90,16 +95,8 @@ class MainUI(QMainWindow):
             else:
                 temp_output = (sqlr.get_output(self.sql_path, search_input_list, search_type))
 
-
-
-        #print(temp_output)
-
         self.output = temp_output
         self.fill_output()
-
-
-        #_output = self.input_textedit.toPlainText()
-        #self.output_textedit.setText(_output)
 
     def fill_output(self):
         print('Outputting Search Results')
@@ -109,11 +106,8 @@ class MainUI(QMainWindow):
             output_text_string += str(output_line) + '\n'
         self.output_textedit.setText(output_text_string)
 
-
-
     def save_output(self):
         print('Saving')
-
 
     def set_output_to_input(self):
         print('Filling input box with output results')
@@ -122,5 +116,7 @@ class MainUI(QMainWindow):
             input_text_string += str(input_line) + '\n'
         self.input_textedit.setText(input_text_string)
 
+    def output_similarity_table(self):
+        print()
 
 

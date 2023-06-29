@@ -9,6 +9,7 @@ pyside6 = "*"
 pip = "*"
 pyinstaller-hooks-contrib = "*"
 requests = "*"
+more-itertools = "*"
 
 [dev-packages]
 

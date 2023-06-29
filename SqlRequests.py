@@ -2,7 +2,7 @@ import sqlite3
 import collections
 
 
-REQUEST_TYPES = ['PFam', 'Accession', 'BGC - P', 'BGC - A']
+REQUEST_TYPES = ['PFam', 'Accession', 'BGC - Pfam', 'BGC - Accession']
 SQL_FILE_PATH = None
 
 
@@ -10,17 +10,9 @@ def get_output(sql_file, search_index, search_type):
     global SQL_FILE_PATH
     SQL_FILE_PATH = sql_file
     output = None
-    # if '\n' in search_index:
-    #     print("Searching Entry List")
-    #     list = True
-    #     output_type = "L_" + output_type
-    # else:
-    #     print("Searching Entry")
-
 
     print(f"Search Type is: {search_type} and Search Index is: {search_index}")
     print(type(search_index))
-
 
     if search_type == 'PFam' and isinstance(search_index, list):
         print("Searching by Pfam List")
@@ -37,13 +29,14 @@ def get_output(sql_file, search_index, search_type):
             output = parent_accessions_from_input_list(SQL_FILE_PATH, search_index)
         case 'Accession':
             print()
-        case 'BGC - P':
-            print('Search BGC by Parent Accession')
+        case 'BGC - Pfam':
+            print('Search BGC by Parent Accession giving Pfams')
+            output = pfams_in_cluster(search_index)
+        case 'BGC - Accession':
+            print('Search BGC by Parent Accession, giving Accessions')
             output = accessions_in_cluster(search_index)
-        case 'BGC - A':
-            print()
 
-    return output
+    return sorted(output)
 
 
 def parent_accessions_from_pfam(_sql_path, pfam):
@@ -84,6 +77,10 @@ def accessions_in_cluster(search_input):
     return get_query_results(get_bgc_accessions_from_parent_accession, search_input)
 
 
+def pfams_in_cluster(search_input):
+    return get_query_results(get_bgc_pfams_from_parent_accession, search_input)
+
+
 def get_query_results(query_input, element):
     conn = sqlite3.connect(SQL_FILE_PATH)
     cur = conn.cursor()
@@ -107,6 +104,13 @@ get_accession_from_family = """
 
 get_bgc_accessions_from_parent_accession = """
     SELECT DISTINCT n.accession
+    FROM neighbors AS n
+    JOIN attributes AS a ON n.gene_key = a.sort_key
+    WHERE a.accession = ?
+"""
+
+get_bgc_pfams_from_parent_accession = """
+    SELECT DISTINCT n.family
     FROM neighbors AS n
     JOIN attributes AS a ON n.gene_key = a.sort_key
     WHERE a.accession = ?
