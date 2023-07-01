@@ -43,13 +43,6 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QCheckBox" name="sql_checkbox">
-            <property name="text">
-             <string>Use sqlite</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QPushButton" name="sql_button">
             <property name="text">
              <string>Upload</string>
@@ -117,9 +110,6 @@
         </item>
         <item>
          <widget class="QComboBox" name="output_type_combobox"/>
-        </item>
-        <item>
-         <widget class="QComboBox" name="output_type_extra_combobox"/>
         </item>
         <item>
          <spacer name="verticalSpacer_4">
