@@ -16,7 +16,9 @@ class MainUI(QMainWindow):
         # Initialize Variables
         self.sql_path = None
         self.input = None
+        self.input_type = None
         self.output = None
+        self.output_type = None
 
         # Load UI
         ui_file = QFile(ui_file)
@@ -55,8 +57,6 @@ class MainUI(QMainWindow):
         # Search Widget
         self.search_button = self.window.findChild(QPushButton, 'search_button')
 
-
-
         # Save Widget
         self.save_button = self.window.findChild(QPushButton, 'save_button')
 
@@ -65,7 +65,7 @@ class MainUI(QMainWindow):
         self.search_button.clicked.connect(self.search)
         self.save_button.clicked.connect(self.save_output)
         self.output_to_input_button.clicked.connect(self.set_output_to_input)
-        self.similarity_button.clicked.connect()
+        self.similarity_button.clicked.connect(self.output_similarity_table)
 
     def sql_upload(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
@@ -75,25 +75,22 @@ class MainUI(QMainWindow):
 
     def search(self):
         print('Searching')
-        search_type = self.output_type_combobox.currentText()
-        search_input_list = self.input_textedit.toPlainText().split('\n')
+        self.input_type = self.input_type_combobox.currentText()
+        self.output_type = self.output_type_combobox.currentText()
+        self.input = self.input_textedit.toPlainText().split('\n')
         temp_output = []
-        # temp = ''
 
-        if self.output_type_combobox.currentText() in upr.REQUEST_TYPES:
-            for element in search_input_list:
-                print(element)
+        if self.output_type in sqlr.REQUEST_TYPES:
+            if len(self.input) <= 1:
+                self.input = self.input[0]
+            temp_output = sqlr.get_output(self.sql_path, self.input, self.output_type)
+        elif self.output_type in upr.REQUEST_TYPES:
+            for element in self.input:
                 try:
-                    temp_output.append(upr.uniprot_request_v2(element, search_type))
+                    temp_output.append(upr.uniprot_request_v2(element, self.output_type))
                 except:
                     print(f"Request Failed for {element}")
                     continue
-        elif self.output_type_combobox.currentText() in sqlr.REQUEST_TYPES:
-            print(f"Input List:  {search_input_list}")
-            if len(search_input_list) <= 1:
-                temp_output = (sqlr.get_output(self.sql_path, search_input_list[0], search_type))
-            else:
-                temp_output = (sqlr.get_output(self.sql_path, search_input_list, search_type))
 
         self.output = temp_output
         self.fill_output()
@@ -117,6 +114,7 @@ class MainUI(QMainWindow):
         self.input_textedit.setText(input_text_string)
 
     def output_similarity_table(self):
-        print()
+        search_input_list = self.input_textedit.toPlainText().split('\n')
+        find_similarity.output_table(self.sql_path, search_input_list)
 
 

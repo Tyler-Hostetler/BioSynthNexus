@@ -21,6 +21,7 @@ def uniprot_request(protein_aID, output_type=None):
 
 
 def uniprot_request_v2(protein_aID, request_type=None):
+	print(protein_aID)
 	url = 'https://rest.uniprot.org/uniprotkb/' + protein_aID + '?format=json'
 	uniprotdata = requests.get(url)
 	gene_bank_id = uniprotdata.json()['uniProtKBCrossReferences'][0]['id']

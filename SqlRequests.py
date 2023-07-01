@@ -1,5 +1,4 @@
 import sqlite3
-import collections
 
 
 REQUEST_TYPES = ['PFam', 'Accession', 'BGC - Pfam', 'BGC - Accession']
@@ -12,22 +11,18 @@ def get_output(sql_file, search_index, search_type):
     output = None
 
     print(f"Search Type is: {search_type} and Search Index is: {search_index}")
-    print(type(search_index))
 
-    if search_type == 'PFam' and isinstance(search_index, list):
-        print("Searching by Pfam List")
+    if search_type == 'Accession' and isinstance(search_index, list):
         search_type = "L_" + search_type
-    else:
-        print("Searching By Individual Pfam")
 
     match search_type:
-        case 'PFam':
+        case 'Accession':
             print('Searching by Individual Pfam')
             output = parent_accessions_from_pfam(SQL_FILE_PATH, search_index)
-        case 'L_PFam':
+        case 'L_Accession':
             print('Searching by Multi-Pfam')
             output = parent_accessions_from_input_list(SQL_FILE_PATH, search_index)
-        case 'Accession':
+        case 'PFam':
             print()
         case 'BGC - Pfam':
             print('Search BGC by Parent Accession giving Pfams')
@@ -93,13 +88,13 @@ def get_query_results(query_input, element):
 
 
 get_accession_from_family = """
-                            SELECT DISTINCT attributes.accession
-                            FROM attributes
-                            JOIN (SELECT gene_key
-                            FROM neighbors
-                            WHERE family LIKE ?)
-                            AS n ON attributes.sort_key = n.gene_key;
-                            """
+    SELECT DISTINCT attributes.accession
+    FROM attributes
+    JOIN (SELECT gene_key
+    FROM neighbors
+    WHERE family LIKE ?)
+    AS n ON attributes.sort_key = n.gene_key;
+    """
 
 
 get_bgc_accessions_from_parent_accession = """
@@ -123,28 +118,5 @@ get_bgc_accessions_from_other_accession = """
         SELECT gene_key
         FROM neighbors
         WHERE accession = ?)
-"""
-
-
-get_accessions_from_bgc = """
-SELECT DISTINCT neighbors.accessions
-FROM 
-                        
-                         
-                         
-                          """
-
-
-get_gene_key_from_family = """
-SELECT DISTINCT neighbors.gene_key
-FROM attributes
-JOIN neighbors ON attributes.sort_key = neighbors.gene_key
-WHERE neighbors.family = ?
-"""
-
-get_local_neighborhood_from_gene_key = """
-SELECT DISTINCT neighbors.family
-FROM neighbors
-WHERE neighbors.gene_key = ?
 """
 
