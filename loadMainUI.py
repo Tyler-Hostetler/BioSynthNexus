@@ -1,7 +1,7 @@
 import sys
 import os
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QComboBox, \
-    QFileDialog
+    QFileDialog, QLineEdit
 from PySide6.QtCore import QFile
 from PySide6.QtUiTools import QUiLoader
 import UniProtRequests as upr
@@ -19,6 +19,7 @@ class MainUI(QMainWindow):
         self.input_type = None
         self.output = None
         self.output_type = None
+        self.secondary_input = None
 
         # Load UI
         ui_file = QFile(ui_file)
@@ -38,6 +39,7 @@ class MainUI(QMainWindow):
         self.input_type_label = self.window.findChild(QLabel, 'input_type_label')
         self.input_type_combobox = self.window.findChild(QComboBox, 'input_type_combobox')
         self.input_type_combobox.addItems(['Accession', 'PFam'])
+        self.secondary_input_lineedit = self.window.findChild(QLineEdit, 'secondary_input_lineedit')
 
         # Output Widgets
         self.output_label = self.window.findChild(QLabel, 'output_label')
@@ -78,12 +80,13 @@ class MainUI(QMainWindow):
         self.input_type = self.input_type_combobox.currentText()
         self.output_type = self.output_type_combobox.currentText()
         self.input = self.input_textedit.toPlainText().split('\n')
+        self.secondary_input = self.secondary_input_lineedit.text()
         temp_output = []
 
         if self.output_type in sqlr.REQUEST_TYPES:
             if len(self.input) <= 1:
                 self.input = self.input[0]
-            temp_output = sqlr.get_output(self.sql_path, self.input, self.output_type)
+            temp_output = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
         elif self.output_type in upr.REQUEST_TYPES:
             for element in self.input:
                 try:

@@ -29,6 +29,16 @@
         <item>
          <widget class="QTextEdit" name="input_textedit"/>
         </item>
+        <item>
+         <widget class="QLabel" name="secondary_input_label">
+          <property name="text">
+           <string>Secondary Input:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="secondary_input_lineedit"/>
+        </item>
        </layout>
       </item>
       <item>

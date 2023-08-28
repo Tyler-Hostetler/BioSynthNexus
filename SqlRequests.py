@@ -1,11 +1,11 @@
 import sqlite3
 
 
-REQUEST_TYPES = ['PFam', 'Accession', 'BGC - Pfam', 'BGC - Accession']
+REQUEST_TYPES = ['PFam', 'Accession', 'BGC - Pfam', 'BGC - Accession', 'Accessions from BGC by Pfam']
 SQL_FILE_PATH = None
 
 
-def get_output(sql_file, search_index, search_type):
+def get_output(sql_file, search_index, search_type, secondary_input):
     global SQL_FILE_PATH
     SQL_FILE_PATH = sql_file
     output = None
@@ -30,6 +30,10 @@ def get_output(sql_file, search_index, search_type):
         case 'BGC - Accession':
             print('Search BGC by Parent Accession, giving Accessions')
             output = accessions_in_cluster(search_index)
+        case 'Accessions from BGC by Pfam':
+            print('Search Accessions by their parent accessions with a specific pfam')
+            output = bgc_acc_from_parent_and_family(SQL_FILE_PATH, search_index, secondary_input)
+
 
     return sorted(output)
 
@@ -65,7 +69,7 @@ def parent_accessions_from_input_list(_sql_path, input_list):
 
     cur.close()
     conn.close()
-    return matches
+    return sorted(matches)
 
 
 def accessions_in_cluster(search_input):
@@ -85,6 +89,22 @@ def get_query_results(query_input, element):
     cur.close()
     conn.close()
     return [row[0] for row in results]
+
+
+def bgc_acc_from_parent_and_family(_sql_path, input_list, pfam_input):
+    conn = sqlite3.connect(_sql_path)
+    cur = conn.cursor()
+    hits = []
+    pfam_input = f"%{pfam_input}%"
+    for element in input_list:
+        cur.execute(get_acc_from_acc_w_pfam, (element, pfam_input))
+        temp_results = cur.fetchall()
+        hits.append([row[0] for row in temp_results])
+
+    matches = [item for sublist in hits for item in sublist]
+    cur.close()
+    conn.close()
+    return matches
 
 
 get_accession_from_family = """
@@ -120,3 +140,9 @@ get_bgc_accessions_from_other_accession = """
         WHERE accession = ?)
 """
 
+get_acc_from_acc_w_pfam = """
+    SELECT DISTINCT n.accession
+    FROM neighbors AS n
+    JOIN attributes AS a ON n.gene_key = a.sort_key
+    WHERE a.accession = ? AND n.family LIKE ?
+"""
