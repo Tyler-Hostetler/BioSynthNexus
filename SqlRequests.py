@@ -9,6 +9,7 @@ def get_output(sql_file, search_index, search_type, secondary_input):
     global SQL_FILE_PATH
     SQL_FILE_PATH = sql_file
     output = None
+    parents = None
 
     print(f"Search Type is: {search_type} and Search Index is: {search_index}")
 
@@ -32,10 +33,9 @@ def get_output(sql_file, search_index, search_type, secondary_input):
             output = accessions_in_cluster(search_index)
         case 'Accessions from BGC by Pfam':
             print('Search Accessions by their parent accessions with a specific pfam')
-            output = bgc_acc_from_parent_and_family(SQL_FILE_PATH, search_index, secondary_input)
+            output, parents = bgc_acc_from_parent_and_family(SQL_FILE_PATH, search_index, secondary_input)
 
-
-    return sorted(output)
+    return output, parents
 
 
 def parent_accessions_from_pfam(_sql_path, pfam):
@@ -95,16 +95,20 @@ def bgc_acc_from_parent_and_family(_sql_path, input_list, pfam_input):
     conn = sqlite3.connect(_sql_path)
     cur = conn.cursor()
     hits = []
+    parents = []
     pfam_input = f"%{pfam_input}%"
     for element in input_list:
         cur.execute(get_acc_from_acc_w_pfam, (element, pfam_input))
         temp_results = cur.fetchall()
-        hits.append([row[0] for row in temp_results])
+        results = [row[0] for row in temp_results]
+        hits.append(results)
+        for _ in results:
+            parents.append(element)
 
     matches = [item for sublist in hits for item in sublist]
     cur.close()
     conn.close()
-    return matches
+    return matches, parents
 
 
 get_accession_from_family = """

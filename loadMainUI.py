@@ -1,5 +1,5 @@
-import sys
 import os
+from datetime import datetime
 from PySide6.QtWidgets import QApplication, QMainWindow, QTextEdit, QLabel, QCheckBox, QPushButton, QComboBox, \
     QFileDialog, QLineEdit
 from PySide6.QtCore import QFile
@@ -18,7 +18,10 @@ class MainUI(QMainWindow):
         self.input = None
         self.input_type = None
         self.output = None
+        self.output_text = None
         self.output_type = None
+        self.output_path = None
+        self.parents = None
         self.secondary_input = None
 
         # Load UI
@@ -86,11 +89,11 @@ class MainUI(QMainWindow):
         if self.output_type in sqlr.REQUEST_TYPES:
             if len(self.input) <= 1:
                 self.input = self.input[0]
-            temp_output = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
+            temp_output, self.parents = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
         elif self.output_type in upr.REQUEST_TYPES:
-            for element in self.input:
+            for index, element in enumerate(self.input):
                 try:
-                    temp_output.append(upr.uniprot_request_v2(element, self.output_type))
+                    temp_output.append(upr.uniprot_request_v2(element, self.parents[index], self.output_type))
                 except:
                     print(f"Request Failed for {element}")
                     continue
@@ -101,13 +104,22 @@ class MainUI(QMainWindow):
     def fill_output(self):
         print('Outputting Search Results')
         self.output_count_label.setText("Count: " + str(len(self.output)))
-        output_text_string = ''
-        for output_line in self.output:
-            output_text_string += str(output_line) + '\n'
-        self.output_textedit.setText(output_text_string)
+        self.output_text = ''
+        if self.output_type in sqlr.REQUEST_TYPES and self.parents is not None:
+            for i in range(len(self.output)):
+                self.output_text += f'{self.output[i]}_({self.parents[i]})\n'
+        else:
+            for output_line in self.output:
+                self.output_text += str(output_line) + '\n'
+        self.output_textedit.setText(self.output_text)
 
     def save_output(self):
         print('Saving')
+        self.output_path = QFileDialog.getExistingDirectory(self, 'Please Select Directory to Save Output')
+        output_filename = f'{self.output_type}_{get_current_date_time()}.txt'
+        output_file = os.path.join(self.output_path, output_filename)
+        with open(output_file, 'w') as file:
+            file.write(self.output_text)
 
     def set_output_to_input(self):
         print('Filling input box with output results')
@@ -120,4 +132,11 @@ class MainUI(QMainWindow):
         search_input_list = self.input_textedit.toPlainText().split('\n')
         find_similarity.output_table(self.sql_path, search_input_list)
 
+
+def get_current_date_time():
+    _current_date_time = str(datetime.now())
+    _current_date_time = _current_date_time.replace(':', '.')
+    _current_date_time = _current_date_time.replace(' ', '_')
+    _current_date_time = _current_date_time[0:-7]
+    return _current_date_time
 

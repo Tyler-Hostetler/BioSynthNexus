@@ -2,6 +2,7 @@ import requests
 
 REQUEST_TYPES = ['GenBankID', 'FASTA', 'Genbank_Protein_ID', 'GenBank_ORF_ID']
 
+
 def uniprot_request(protein_aID, output_type=None):
 	url = 'https://rest.uniprot.org/uniprotkb/' + protein_aID + '?format=json'
 	uniprotdata = requests.get(url)
@@ -20,7 +21,7 @@ def uniprot_request(protein_aID, output_type=None):
 			return fasta
 
 
-def uniprot_request_v2(protein_aID, request_type=None):
+def uniprot_request_v2(protein_aID, parent=None, request_type=None):
 	print(protein_aID)
 	url = 'https://rest.uniprot.org/uniprotkb/' + protein_aID + '?format=json'
 	uniprotdata = requests.get(url)
@@ -38,7 +39,10 @@ def uniprot_request_v2(protein_aID, request_type=None):
 		case "GenBank_Protein_ID":
 			return gene_bank_name
 		case "FASTA":
-			return f">{protein_aID}\n{fasta}"
+			if parent is None:
+				return f">{protein_aID}\n{fasta}"
+			else:
+				return f">{protein_aID}_({parent})\n{fasta}"
 
 # Testing
 '''
