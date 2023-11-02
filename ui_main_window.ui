@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>667</width>
-    <height>457</height>
+    <width>695</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,49 +62,6 @@
          </layout>
         </item>
         <item>
-         <spacer name="verticalSpacer_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="input_type_label">
-          <property name="text">
-           <string>Input Type:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="input_type_combobox"/>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
          <widget class="Line" name="line_2">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -122,6 +79,13 @@
          <widget class="QComboBox" name="output_type_combobox"/>
         </item>
         <item>
+         <widget class="QPushButton" name="output_to_input_button">
+          <property name="text">
+           <string>Replace Input with Output</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -133,13 +97,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item>
-         <widget class="QPushButton" name="output_to_input_button">
-          <property name="text">
-           <string>Replace Input with Output</string>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="Line" name="line_3">
@@ -215,7 +172,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>667</width>
+     <width>695</width>
      <height>21</height>
     </rect>
    </property>

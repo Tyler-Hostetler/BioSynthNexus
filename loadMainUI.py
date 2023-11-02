@@ -16,7 +16,6 @@ class MainUI(QMainWindow):
         # Initialize Variables
         self.sql_path = None
         self.input = None
-        self.input_type = None
         self.output = None
         self.output_text = None
         self.output_type = None
@@ -39,9 +38,6 @@ class MainUI(QMainWindow):
         # Input Widgets
         self.input_label = self.window.findChild(QLabel, 'input_label')
         self.input_textedit = self.window.findChild(QTextEdit, 'input_textedit')
-        self.input_type_label = self.window.findChild(QLabel, 'input_type_label')
-        self.input_type_combobox = self.window.findChild(QComboBox, 'input_type_combobox')
-        self.input_type_combobox.addItems(['Accession', 'PFam'])
         self.secondary_input_lineedit = self.window.findChild(QLineEdit, 'secondary_input_lineedit')
 
         # Output Widgets
@@ -80,7 +76,6 @@ class MainUI(QMainWindow):
 
     def search(self):
         print('Searching')
-        self.input_type = self.input_type_combobox.currentText()
         self.output_type = self.output_type_combobox.currentText()
         self.input = self.input_textedit.toPlainText().split('\n')
         self.secondary_input = self.secondary_input_lineedit.text()
