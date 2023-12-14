@@ -87,8 +87,14 @@ class MainUI(QMainWindow):
             temp_output, self.parents = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
         elif self.output_type in upr.REQUEST_TYPES:
             for index, element in enumerate(self.input):
+                if self.parents is None:
+                    _parents = None
+                elif element == '':
+                    continue
+                else:
+                    _parents = self.parents[index]
                 try:
-                    temp_output.append(upr.uniprot_request_v2(element, self.parents[index], self.output_type))
+                    temp_output.append(upr.uniprot_request_v2(element, _parents, self.output_type))
                 except:
                     print(f"Request Failed for {element}")
                     continue
@@ -124,8 +130,9 @@ class MainUI(QMainWindow):
         self.input_textedit.setText(input_text_string)
 
     def output_similarity_table(self):
+        self.secondary_input = self.secondary_input_lineedit.text()
         search_input_list = self.input_textedit.toPlainText().split('\n')
-        find_similarity.output_table(self.sql_path, search_input_list)
+        find_similarity.output_table(self.sql_path, search_input_list, self.secondary_input)
 
 
 def get_current_date_time():
