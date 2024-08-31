@@ -1,6 +1,7 @@
-# Protein Analysis Tool
+# BGC-Pro
 
 ---
+
 ## Overview:
 A graphical user interface to easily access and output protein data.
 
@@ -15,26 +16,35 @@ Extracts [UniProt](https://www.uniprot.org/)
 data for a given protein Accession ID (or from a list of IDs).
 
 ---
+### Terminology:
+
+Query Accessions - The accessions used to generate the SQLite File
+
+
+---
 ## Input / Output Tables:
 ### UniProt Extractions:
 
-| Output             | Input           | Description                                |
-|--------------------|-----------------|--------------------------------------------|
-| GenBankID          | Accession ID(s) | Gets the GenBank Nucleotide Sequence ID(s) |
-| FASTA              | Accession ID(s) | Gets the FASTA Sequence(s)                 |
-| GenBank_Protein_ID | Accession ID(s) | Gets the GenBank Protein ID(s)  **WIP**    |
+| Output             | Input           | Description                                     |
+|--------------------|-----------------|-------------------------------------------------|
+| FASTA              | Accession ID(s) | Gets the FASTA Sequence(s)                      |
+| GenBankID          | Accession ID(s) | Gets the GenBank Nucleotide Sequence ID(s)      |
+| GenBank_Protein_ID | Accession ID(s) | Gets the GenBank Protein ID(s)                  |   
+| GenBank_ORF_ID     | Accession ID(s) | Gets the GenBank Open Reading Frame (ORF) ID(s) |
 
 ### GNN Extractions:
 
 
-| Output                      | Input                                                | Description                                                                                                                       |
-|-----------------------------|------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------|
-| PFam                        | Accession ID(s)                                      | Gets the Associated PFam ID  **WIP**                                                                                              |
-| BGC-PFam                    | Parent Accession ID                                  | Gets the PFams for each of the proteins within the BGC                                                                            |
-| BGC-Accession               | Parent Accession ID                                  | Gets the Accession for each of the proteins within the BGC                                                                        |
-| Accessions from BGC by PFam | Parent Accession ID(s)<br/> + PFam (Secondary Input) | Gets the Accession for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(Parent Accession)' |
+| Output                      | Input                                   | Description                                                                                                                     |
+|-----------------------------|-----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| PFam                        | BGC ID(s)                               | Gets the Associated PFam ID  **WIP**                                                                                            |
+| Query Accessions            | PFam ID(s)                              | Gets the Accessions IDs for the Query Input given                                                                               |
+| BGC ID                      | PFam ID(s)                              | Gets the BGC ID for the                                                                                                         |
+| BGC-PFam                    | BGC ID                                  | Gets the PFams for each of the proteins within the BGC                                                                          |
+| BGC-Accession               | BGC ID                                  | Gets the Accession IDs for each of the proteins within the BGC                                                                  |
+| Accessions from BGC by PFam | BGC ID(s)<br/> + PFam (Secondary Input) | Gets the Accession IDs for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(Cluster ID)' |
 
-Note: The `Accessions from BGC by PFam` outputs as `Output Accession_(Parent Accession)`,
+Note: The `Accessions from BGC by PFam` outputs as `Output Accession_(BGC ID)`,
 however if you use `Replace Input with Output`, only the Output Accession will be displayed
 
 ---
@@ -48,25 +58,25 @@ however if you use `Replace Input with Output`, only the Output Accession will b
 
 ---
 ## Usage example:
-You have a GNN of the protein X, you want to search for all BGCs which contain proteins labelled with the PFam `PF13714`.
+You have a GNN of the protein X, you want to search for all BGCs which contain proteins assigned with the PFam `PF10862`.
 Then you would like to get the accession IDs associated with those PF13714 proteins that you just found.
 Lastly, you would like the FASTA sequence for each of those proteins to compare.
 
 
 #### Get the BGCs that contain the PFam PF13714
 1. Upload the GNN generated for protein X
-2. Enter the 'PF13714' into the input field
-3. Select `Accession` as the Output Type
+2. Enter the 'PF10862' into the input field
+3. Select `BGC ID` as the Output Type
 4. Click `Search`
-   1. Displayed will be all parent accession which have BGCs that contain at least one protein associated with the given PFam
+   1. Displayed will be all BGCs that contain at least one protein associated with the given PFam
 
 #### Get the Accession IDs for each of proteins associated with the PFam PF13714
 1. Click `Replace Input with Output`
-2. Enter 'PF13714' into the `Secondary Input` Field
+2. Enter 'PF10862' into the `Secondary Input` Field
 3. Select `Accessions from BGC by PFam` as the Output Type
 4. Click `Search`
-   1. Displayed will be the Accession ID of each protein that is associated with (or contains) the PFam 'PF13714'
-   2. In parentheses is the parent Accession ID (If one BGC contains multiple proteins with the given PFam they will be displayed on separate lines)
+   1. Displayed will be the Accession ID of each protein that is associated with (or contains) the PFam 'PF10862'
+   2. In parentheses is the BGC ID (If one BGC contains multiple proteins with the given PFam they will be displayed on separate lines)
 
 #### Get the FASTA for each of the proteins
 1. Click `Replace Input with Output`
@@ -80,3 +90,8 @@ Lastly, you would like the FASTA sequence for each of those proteins to compare.
 At anyone of these steps the Output can be saved to a text document.
 
 Simply click `Save` and a window will appear allowing you select the directory you would like to save the file.
+
+
+---
+
+## References
