@@ -7,8 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>695</width>
-    <height>491</height>
+    <height>490</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Segoe UI Variable Display Semib</family>
+    <pointsize>12</pointsize>
+    <weight>75</weight>
+    <bold>true</bold>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -208,7 +216,7 @@
      <x>0</x>
      <y>0</y>
      <width>695</width>
-     <height>21</height>
+     <height>27</height>
     </rect>
    </property>
   </widget>
