@@ -1,0 +1,22 @@
+.idea/
+DfmD/
+DhpA/
+FfnD/
+HrmJ_SSC/
+Ideas.txt
+PEP-Mutase/
+PhnY/
+SfaA/
+Testing Files/
+TyCo_Inc_BioInfoTool.spec
+Version_2.0.spec
+pycache__/
+build/
+dist/
+main.spec
+main.ui
+pfam_accession_search.spec
+pyinstaller_workpath/
+similarity.csv
+temporary_output.txt
+__pycache__/
