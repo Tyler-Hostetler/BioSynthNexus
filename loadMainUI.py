@@ -54,6 +54,9 @@ class MainUI(QMainWindow):
         # Set Output Type Box to UniProt Options
         self.update_output_combo(0)
 
+        self.input_label.setText('Input: Accession ID')
+        self.output_label.setText('Output: FASTA Sequence')
+
         # Fill Request Types
         self.request_type_combobox.addItems(['UniProt','BGC'])
 
@@ -78,6 +81,7 @@ class MainUI(QMainWindow):
         self.output_to_input_button.clicked.connect(self.set_output_to_input)
         self.similarity_button.clicked.connect(self.output_similarity_table)
         self.request_type_combobox.currentIndexChanged.connect(self.update_output_combo)
+        self.output_type_combobox.currentIndexChanged.connect(self.selection_hints)
 
 
 
@@ -93,6 +97,41 @@ class MainUI(QMainWindow):
                 self.status_label.setStyleSheet("color: #ff1744")
                 self.request_type_combobox.setCurrentIndex(0)
 
+    def selection_hints(self):
+        input_hint = 'Input: '
+        output_hint = 'Output: '
+        request_type = self.request_type_combobox.currentText()
+        output_type = self.output_type_combobox.currentText()
+
+        match output_type:
+            case 'FASTA':
+                input_hint += 'Accession ID'
+                output_hint += 'FASTA Sequence'
+            case 'GenBankID':
+                input_hint += 'Accession ID'
+                output_hint += 'GenBank(EMBL) Genome ID'
+            case 'GenBank_Protein_ID':
+                input_hint += 'Accession ID'
+                output_hint += 'GenBank(EMBL) Protein ID'
+            case 'GenBank_ORF_ID':
+                input_hint += 'Accession ID'
+                output_hint += 'GenBank(EMBL) Gene Open Reading Frame (ORF) ID'
+            case 'Accession':
+                input_hint += 'PFam ID(s) within BGCs'
+                output_hint += 'Query Accessions within BGCs that contain Input PFam(s)'
+            case 'BGC - Pfam':
+                input_hint += 'BGC ID'
+                output_hint += 'Pfam(s) found within given BGC'
+            case 'BGC - Accession':
+                input_hint += 'Accession ID(s) within given BGC'
+                output_hint += 'Query Accessions within BGCs that contain Input PFam(s)'
+            case 'Accessions from BGC by Pfam':
+                input_hint += 'BGC IDs and PFam(Secondary Input)'
+                output_hint += 'Accession of Proteins within given PFam in given BGCs <br>Accession_(BGC ID)'
+
+
+        self.input_label.setText(input_hint)
+        self.output_label.setText(output_hint)
 
     def sql_upload(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
