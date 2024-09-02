@@ -37,8 +37,8 @@
         <item>
          <widget class="QTextEdit" name="input_textedit">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>80</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
@@ -73,6 +73,33 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Request Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="request_type_combobox"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="output_type_label">
+          <property name="text">
+           <string>Output Type:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="output_type_combobox"/>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="sql_label">
@@ -112,34 +139,27 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="output_type_label">
-          <property name="text">
-           <string>Output Type:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="output_type_combobox"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="output_to_input_button">
-          <property name="text">
-           <string>Replace Input with Output</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <spacer name="verticalSpacer_4">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>80</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="search_button">
+          <property name="text">
+           <string>Search</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="Line" name="line_3">
@@ -149,9 +169,9 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="search_button">
+         <widget class="QPushButton" name="output_to_input_button">
           <property name="text">
-           <string>Search</string>
+           <string>Replace Input with Output</string>
           </property>
          </widget>
         </item>
@@ -195,7 +215,14 @@
          </widget>
         </item>
         <item>
-         <widget class="QTextEdit" name="output_textedit"/>
+         <widget class="QTextEdit" name="output_textedit">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
+            <horstretch>80</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="output_count_label">
@@ -216,7 +243,7 @@
      <x>0</x>
      <y>0</y>
      <width>695</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

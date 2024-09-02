@@ -1,6 +1,6 @@
 import requests
 
-REQUEST_TYPES = ['GenBankID', 'FASTA', 'GenBank_Protein_ID', 'GenBank_ORF_ID']
+REQUEST_TYPES = ['FASTA', 'GenBankID', 'GenBank_Protein_ID', 'GenBank_ORF_ID']
 
 
 def uniprot_request_v2(protein_aID, parent=None, request_type=None):
