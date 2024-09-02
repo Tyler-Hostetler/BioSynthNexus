@@ -11,7 +11,7 @@ if __name__ == '__main__':
 
     # Apply Material Design Stylesheet
     apply_stylesheet(app, theme='custom_ui_theme.xml')
-    #apply_stylesheet(app, theme='dark_cyan.xml')
+
 
     # Show the main window
     UIWindow.window.show()
