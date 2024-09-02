@@ -28,6 +28,7 @@ class MainUI(QMainWindow):
         ui_file.open(QFile.ReadOnly)
         loader = QUiLoader()
         self.window = loader.load(ui_file)
+
         # ui_file.close()
 
         # Sql Widgets
@@ -40,17 +41,21 @@ class MainUI(QMainWindow):
         self.input_textedit = self.window.findChild(QTextEdit, 'input_textedit')
         self.secondary_input_lineedit = self.window.findChild(QLineEdit, 'secondary_input_lineedit')
 
+
         # Output Widgets
         self.output_label = self.window.findChild(QLabel, 'output_label')
         self.output_count_label = self.window.findChild(QLabel, 'output_count_label')
         self.output_textedit = self.window.findChild(QTextEdit, 'output_textedit')
         self.output_type_label = self.window.findChild(QLabel, 'output_type_label')
         self.output_type_combobox = self.window.findChild(QComboBox, 'output_type_combobox')
-        self.output_type_combobox.addItems(upr.REQUEST_TYPES)
-        self.output_type_combobox.addItems(sqlr.REQUEST_TYPES)
+        self.request_type_combobox = self.window.findChild(QComboBox, 'request_type_combobox')
         self.similarity_button = self.window.findChild(QPushButton, 'similarity_button')
 
-        # Note: Use First combobox for a selection between SQL and Uniprot, fill second combobox accordingly
+        # Set Output Type Box to UniProt Options
+        self.update_output_combo(0)
+
+        # Fill Request Types
+        self.request_type_combobox.addItems(['UniProt','BGC'])
 
         # Replace Input with Output Widget
         self.output_to_input_button = self.window.findChild(QPushButton, 'output_to_input_button')
@@ -61,18 +66,41 @@ class MainUI(QMainWindow):
         # Save Widget
         self.save_button = self.window.findChild(QPushButton, 'save_button')
 
+        #Fix Text Coloration
+        self.input_textedit.setStyleSheet("color: #ffffff")
+        self.secondary_input_lineedit.setStyleSheet("color: #ffffff")
+        self.output_textedit.setStyleSheet("color: #ffffff")
+
         # Inputs
         self.sql_button.clicked.connect(self.sql_upload)
         self.search_button.clicked.connect(self.search)
         self.save_button.clicked.connect(self.save_output)
         self.output_to_input_button.clicked.connect(self.set_output_to_input)
         self.similarity_button.clicked.connect(self.output_similarity_table)
+        self.request_type_combobox.currentIndexChanged.connect(self.update_output_combo)
+
+
+
+    def update_output_combo(self, index):
+        self.output_type_combobox.clear()
+        if index == 0:
+            self.output_type_combobox.addItems(upr.REQUEST_TYPES)
+        elif index == 1:
+            if self.sql_path is not None:
+                self.output_type_combobox.addItems(sqlr.REQUEST_TYPES)
+            else:
+                self.sql_button.setStyleSheet("border: 2px solid #ff1744; color: #ff1744")
+                self.status_label.setStyleSheet("color: #ff1744")
+                self.request_type_combobox.setCurrentIndex(0)
+
 
     def sql_upload(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
         self.sql_path = _sql_path[0]
         print(f"Attempting to Open {self.sql_path}")
         self.status_label.setText('Selected: ' + os.path.basename(self.sql_path))
+        self.sql_button.setStyleSheet("border: 2px solid #4dd0e1; color: #4dd0e1")
+        self.status_label.setStyleSheet("color: #4dd0e1")
 
     def search(self):
         print('Searching')
