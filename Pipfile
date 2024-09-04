@@ -5,14 +5,13 @@ name = "pypi"
 
 [packages]
 pandas = "*"
-pyside6 = "*"
-pip = "*"
-pyinstaller-hooks-contrib = "*"
 requests = "*"
 more-itertools = "*"
+qt-material = "*"
+pyside6 = "6.5.3"
+numpy = "1.22.4"
 
 [dev-packages]
-pip = "*"
 pyinstaller-hooks-contrib = "*"
 
 [requires]

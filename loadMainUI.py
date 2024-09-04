@@ -29,6 +29,8 @@ class MainUI(QMainWindow):
         loader = QUiLoader()
         self.window = loader.load(ui_file)
 
+        self.window.setWindowTitle("BioSynthNexus")
+
         # ui_file.close()
 
         # Sql Widgets
