@@ -17,14 +17,19 @@ def output_table(sql_path, pfam_list, secondary_input):
         true_false_list = []
         for acc in pep_accessions:
             if acc in match_list[group]:
-                true_false_list.append('True')
+                true_false_list.append('TRUE')
             else:
-                true_false_list.append('False')
+                true_false_list.append('FALSE')
         compare_list.append(true_false_list)
 
     df = pd.DataFrame(compare_list, columns=pep_accessions, index=match_list.keys())
-    transposed_df = df.transpose()
-    transposed_df.to_csv('similarity.csv', index=True)
+    df = df.transpose()
+
+    # Create a column the number of PFams a BGC has similar to the searched PFams
+    df['TRUE Count'] = (df == 'TRUE').sum(axis=1)
+    df_sorted = df.sort_values(by='TRUE Count', ascending=False)
+    df_sorted = df_sorted.reset_index()
+    df_sorted.to_csv('similarity.csv', index=False)
 
 
 def get_all_combinations(_search_list):
