@@ -182,6 +182,7 @@ class MainUI(QMainWindow):
             for output_line in self.output:
                 self.output_text += str(output_line) + '\n'
         self.output_textedit.setText(self.output_text)
+        self.parents = None
 
     def save_output(self):
         print('Saving')

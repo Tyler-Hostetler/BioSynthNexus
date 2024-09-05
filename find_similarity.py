@@ -31,6 +31,9 @@ def output_table(sql_path, pfam_list, secondary_input):
     df_sorted = df_sorted.reset_index()
     df_sorted.to_csv('similarity.csv', index=False)
 
+    bgc_ids = df_sorted.iloc[:,0]
+    true_counts = df_sorted['TRUE Count'].tolist()
+
 
 def get_all_combinations(_search_list):
     combination_list = []

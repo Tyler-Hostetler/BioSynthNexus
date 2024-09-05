@@ -11,7 +11,8 @@ def get_output(sql_file, search_index, search_type, secondary_input):
     output = None
     parents = None
 
-    print(f"Search Type is: {search_type} and Search Index is: {search_index}")
+    if search_index[1] == '':
+        search_index = search_index[0]
 
     if search_type == 'Accession' and isinstance(search_index, list):
         search_type = "L_" + search_type
