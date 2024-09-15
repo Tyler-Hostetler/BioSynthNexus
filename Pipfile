@@ -4,10 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "*"
-requests = "*"
-more-itertools = "*"
-qt-material = "*"
+pandas = "2.2.2"
+requests = "2.32.2"
+more-itertools = "10.4.0"
+qt-material = "2.14"
 pyside6 = "6.5.3"
 numpy = "1.22.4"
 
