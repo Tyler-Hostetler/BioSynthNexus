@@ -6,7 +6,8 @@ from PySide6.QtCore import QFile
 from PySide6.QtUiTools import QUiLoader
 import UniProtRequests as upr
 import SqlRequests as sqlr
-import find_similarity
+import find_similarity as f_simi
+
 
 
 class MainUI(QMainWindow):
@@ -22,6 +23,7 @@ class MainUI(QMainWindow):
         self.output_path = None
         self.parents = None
         self.secondary_input = None
+        self.similarity_df = None
 
         # Load UI
         ui_file = QFile(ui_file)
@@ -52,6 +54,9 @@ class MainUI(QMainWindow):
         self.output_type_combobox = self.window.findChild(QComboBox, 'output_type_combobox')
         self.request_type_combobox = self.window.findChild(QComboBox, 'request_type_combobox')
         self.similarity_button = self.window.findChild(QPushButton, 'similarity_button')
+
+        # Disable button until user uses the Similarity Function
+        self.similarity_button.setEnabled(False)
 
         # Set Output Type Box to UniProt Options
         self.update_output_combo(0)
@@ -94,6 +99,7 @@ class MainUI(QMainWindow):
         elif index == 1:
             if self.sql_path is not None:
                 self.output_type_combobox.addItems(sqlr.REQUEST_TYPES)
+                self.output_type_combobox.addItems(f_simi.REQUEST_TYPES)
             else:
                 self.sql_button.setStyleSheet("border: 2px solid #ff1744; color: #ff1744")
                 self.status_label.setStyleSheet("color: #ff1744")
@@ -130,6 +136,9 @@ class MainUI(QMainWindow):
             case 'Accessions from BGC by Pfam':
                 input_hint += 'BGC IDs and PFam(Secondary Input)'
                 output_hint += 'Accession of Proteins within given PFam in given BGCs <br>Accession_(BGC ID)'
+            case 'BGC-Pfam-Similarity':
+                input_hint += 'PFam ID(s)'
+                output_hint += 'BGC IDs and number of matching PFams'
 
 
         self.input_label.setText(input_hint)
@@ -148,6 +157,7 @@ class MainUI(QMainWindow):
         self.output_type = self.output_type_combobox.currentText()
         self.input = self.input_textedit.toPlainText().split('\n')
         self.secondary_input = self.secondary_input_lineedit.text()
+        self.parents = None
         temp_output = []
 
         if self.output_type in sqlr.REQUEST_TYPES:
@@ -167,6 +177,12 @@ class MainUI(QMainWindow):
                 except:
                     print(f"Request Failed for {element}")
                     continue
+        elif self.output_type in f_simi.REQUEST_TYPES:
+            self.similarity_df, bgcIDs, true_counts = f_simi.output_table(self.sql_path, self.input, self.secondary_input)
+            temp_output = bgcIDs
+            self.parents = true_counts
+            self.activate_similarity_button()
+
 
         self.output = temp_output
         self.fill_output()
@@ -175,7 +191,7 @@ class MainUI(QMainWindow):
         print('Outputting Search Results')
         self.output_count_label.setText("Count: " + str(len(self.output)))
         self.output_text = ''
-        if self.output_type in sqlr.REQUEST_TYPES and self.parents is not None:
+        if (self.output_type in sqlr.REQUEST_TYPES and self.parents is not None) or self.output_type in f_simi.REQUEST_TYPES:
             for i in range(len(self.output)):
                 self.output_text += f'{self.output[i]}_({self.parents[i]})\n'
         else:
@@ -185,11 +201,13 @@ class MainUI(QMainWindow):
         self.parents = None
 
     def save_output(self):
-        print('Saving')
-        self.output_path = QFileDialog.getExistingDirectory(self, 'Please Select Directory to Save Output')
-        output_filename = f'{self.output_type}_{get_current_date_time()}.txt'
-        output_file = os.path.join(self.output_path, output_filename)
-        with open(output_file, 'w') as file:
+        output_path, _ = QFileDialog.getSaveFileName(
+                        self,
+                        "Save Output", # Dialog Title
+                        f"{self.output_type}_{get_current_date_time()}.txt", # Default file name
+                        "Text Files (*.txt);;All Files (*)"
+                        )
+        with open(output_path, 'w') as file:
             file.write(self.output_text)
 
     def set_output_to_input(self):
@@ -200,9 +218,18 @@ class MainUI(QMainWindow):
         self.input_textedit.setText(input_text_string)
 
     def output_similarity_table(self):
-        self.secondary_input = self.secondary_input_lineedit.text()
-        search_input_list = self.input_textedit.toPlainText().split('\n')
-        find_similarity.output_table(self.sql_path, search_input_list, self.secondary_input)
+        output_path, _ = QFileDialog.getSaveFileName(
+                self,
+                "Save Similarity Table", # Dialog Title
+                f"{self.output_type}_{get_current_date_time()}.csv", # Default file name
+                "Text Files (*.csv);;All Files (*)"
+                )
+        f_simi.save_similarity_table(self.similarity_df, output_path)
+
+    def activate_similarity_button(self):
+        self.similarity_button.setEnabled(True)
+        self.similarity_button.setStyleSheet("border: 2px solid #4dd0e1; color: #4dd0e1")
+
 
 
 def get_current_date_time():
