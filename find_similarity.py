@@ -2,6 +2,7 @@ from more_itertools import distinct_combinations
 import SqlRequests as sql
 import pandas as pd
 
+REQUEST_TYPES = ['BGC-Pfam-Similarity']
 
 def output_table(sql_path, pfam_list, secondary_input):
     pep_accessions = get_accessions_from_single_list(sql_path, [], secondary_input)[0]
@@ -10,7 +11,7 @@ def output_table(sql_path, pfam_list, secondary_input):
         acc_match = get_accessions_from_single_list(sql_path, [pfam], secondary_input)[0]
         match_list.update({pfam: acc_match})
 
-    print(f"PfamList: {pfam_list}\n Pep-Accessions: {pep_accessions}\nMatch_list: {match_list}")
+    #print(f"PfamList: {pfam_list}\n Pep-Accessions: {pep_accessions}\nMatch_list: {match_list}")
 
     compare_list = []
     for group in match_list:
@@ -29,7 +30,18 @@ def output_table(sql_path, pfam_list, secondary_input):
     df['TRUE Count'] = (df == 'TRUE').sum(axis=1)
     df_sorted = df.sort_values(by='TRUE Count', ascending=False)
     df_sorted = df_sorted.reset_index()
-    df_sorted.to_csv('similarity.csv', index=False)
+    #df_sorted.to_csv('similarity.csv', index=False)
+
+    bgc_ids = df_sorted.iloc[:,0].tolist()
+    true_counts = df_sorted['TRUE Count'].tolist()
+
+    
+
+    return df_sorted, bgc_ids, true_counts
+
+
+def save_similarity_table(simi_df, file_path):
+    simi_df.to_csv(file_path, index=False)
 
 
 def get_all_combinations(_search_list):
