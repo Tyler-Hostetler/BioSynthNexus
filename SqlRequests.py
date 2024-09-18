@@ -1,7 +1,7 @@
 import sqlite3
 
 
-REQUEST_TYPES = ['PFam', 'Accession', 'BGC - Pfam', 'BGC - Accession', 'Accessions from BGC by Pfam']
+REQUEST_TYPES = ['Query Accession', 'BGC ID', 'BGC - Pfam', 'BGC - Accession', 'Accessions from BGC by Pfam']
 SQL_FILE_PATH = None
 
 
@@ -11,7 +11,8 @@ def get_output(sql_file, search_index, search_type, secondary_input):
     output = None
     parents = None
 
-
+    if search_type in ['Query Accession','BGC ID']:
+        search_type='Accession'
 
     #print(f"Search Type is: {search_type} and Search Index is: {search_index}")
 

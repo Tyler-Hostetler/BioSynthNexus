@@ -30,10 +30,7 @@ class MainUI(QMainWindow):
         ui_file.open(QFile.ReadOnly)
         loader = QUiLoader()
         self.window = loader.load(ui_file)
-
         self.window.setWindowTitle("BioSynthNexus")
-
-        # ui_file.close()
 
         # Sql Widgets
         self.status_label = self.window.findChild(QLabel, 'sql_label')
@@ -44,7 +41,6 @@ class MainUI(QMainWindow):
         self.input_label = self.window.findChild(QLabel, 'input_label')
         self.input_textedit = self.window.findChild(QTextEdit, 'input_textedit')
         self.secondary_input_lineedit = self.window.findChild(QLineEdit, 'secondary_input_lineedit')
-
 
         # Output Widgets
         self.output_label = self.window.findChild(QLabel, 'output_label')
@@ -124,18 +120,21 @@ class MainUI(QMainWindow):
             case 'GenBank_ORF_ID':
                 input_hint += 'Accession ID'
                 output_hint += 'GenBank(EMBL) Gene Open Reading Frame (ORF) ID'
-            case 'Accession':
-                input_hint += 'PFam ID(s) within BGCs'
-                output_hint += 'Query Accessions within BGCs that contain Input PFam(s)'
+            case 'Query Accession':
+                input_hint += 'PFam ID(s)'
+                output_hint += 'Query Accessions within BGCs that contain All Input PFam(s)'
+            case 'BGC ID':
+                input_hint += 'PFam ID(s)'
+                output_hint += 'BGCs that contain All Input PFam(s)'
             case 'BGC - Pfam':
                 input_hint += 'BGC ID'
-                output_hint += 'Pfam(s) found within given BGC'
+                output_hint += 'PFam(s) found within given BGC'
             case 'BGC - Accession':
                 input_hint += 'Accession ID(s) within given BGC'
                 output_hint += 'Query Accessions within BGCs that contain Input PFam(s)'
-            case 'Accessions from BGC by Pfam':
+            case 'Accessions from BGC by PFam':
                 input_hint += 'BGC IDs and PFam(Secondary Input)'
-                output_hint += 'Accession of Proteins within given PFam in given BGCs <br>Accession_(BGC ID)'
+                output_hint += 'Accession ID(s) of Proteins in given BGCs that contain given PFam <br>Accession_(BGC ID)'
             case 'BGC-Pfam-Similarity':
                 input_hint += 'PFam ID(s)'
                 output_hint += 'BGC IDs and number of matching PFams'
@@ -164,6 +163,7 @@ class MainUI(QMainWindow):
             if len(self.input) <= 1:
                 self.input = self.input[0]
             temp_output, self.parents = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
+        
         elif self.output_type in upr.REQUEST_TYPES:
             for index, element in enumerate(self.input):
                 if self.parents is None:
@@ -177,6 +177,7 @@ class MainUI(QMainWindow):
                 except:
                     print(f"Request Failed for {element}")
                     continue
+        
         elif self.output_type in f_simi.REQUEST_TYPES:
             self.similarity_df, bgcIDs, true_counts = f_simi.output_table(self.sql_path, self.input, self.secondary_input)
             temp_output = bgcIDs
