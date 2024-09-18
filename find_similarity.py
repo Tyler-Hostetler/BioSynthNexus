@@ -43,9 +43,6 @@ def output_table(sql_path, pfam_list, secondary_input):
 def save_similarity_table(simi_df, file_path):
     simi_df.to_csv(file_path, index=False)
 
-    bgc_ids = df_sorted.iloc[:,0]
-    true_counts = df_sorted['TRUE Count'].tolist()
-
 
 def get_all_combinations(_search_list):
     combination_list = []
