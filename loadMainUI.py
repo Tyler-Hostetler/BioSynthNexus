@@ -87,7 +87,7 @@ class MainUI(QMainWindow):
         self.output_type_combobox.currentIndexChanged.connect(self.selection_hints)
 
 
-
+    # Changes items listed in Output Type Combobox based on the Request Type Selected
     def update_output_combo(self, index):
         self.output_type_combobox.clear()
         if index == 0:
@@ -101,6 +101,7 @@ class MainUI(QMainWindow):
                 self.status_label.setStyleSheet("color: #ff1744")
                 self.request_type_combobox.setCurrentIndex(0)
 
+    # Updates the Input and Output Labels to Inform User what to input and what the expected output is
     def selection_hints(self):
         input_hint = 'Input: '
         output_hint = 'Output: '
@@ -143,6 +144,7 @@ class MainUI(QMainWindow):
         self.input_label.setText(input_hint)
         self.output_label.setText(output_hint)
 
+    # Prompts User to upload SQLITE File
     def sql_upload(self):
         _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
         self.sql_path = _sql_path[0]
@@ -151,23 +153,26 @@ class MainUI(QMainWindow):
         self.sql_button.setStyleSheet("border: 2px solid #4dd0e1; color: #4dd0e1")
         self.status_label.setStyleSheet("color: #4dd0e1")
 
+    # Once the User clicks search this function determines request type and output type they requested and handles accordingly
     def search(self):
         print('Searching')
         self.output_type = self.output_type_combobox.currentText()
         self.input = self.input_textedit.toPlainText().split('\n')
         self.secondary_input = self.secondary_input_lineedit.text()
-        self.parents = None
         temp_output = []
 
+        # SQL Requests
         if self.output_type in sqlr.REQUEST_TYPES:
+            # Need to determine if user is inputing a single value or a list
             if len(self.input) <= 1:
                 self.input = self.input[0]
             temp_output, self.parents = sqlr.get_output(self.sql_path, self.input, self.output_type, self.secondary_input)
         
+        # UniProt Requests
         elif self.output_type in upr.REQUEST_TYPES:
             for index, element in enumerate(self.input):
-                if self.parents is None:
-                    _parents = None
+                if self.parents is None:    # Checks if user is using accessions that aren't considered BGC IDs
+                    _parents = None         
                 elif element == '':
                     continue
                 else:
@@ -178,6 +183,7 @@ class MainUI(QMainWindow):
                     print(f"Request Failed for {element}")
                     continue
         
+        # BGC Similarity
         elif self.output_type in f_simi.REQUEST_TYPES:
             self.similarity_df, bgcIDs, true_counts = f_simi.output_table(self.sql_path, self.input, self.secondary_input)
             temp_output = bgcIDs
@@ -188,10 +194,13 @@ class MainUI(QMainWindow):
         self.output = temp_output
         self.fill_output()
 
+    # Fills output field based on output type
     def fill_output(self):
         print('Outputting Search Results')
-        self.output_count_label.setText("Count: " + str(len(self.output)))
-        self.output_text = ''
+        self.output_count_label.setText("Count: " + str(len(self.output))) # Provides count of outputs
+        self.output_text = ''   # Clears output field
+
+        # Checks if output type is a sql request with parents (BGC IDs associated with accession ID) or its a similarity request (matches are treated as parents)
         if (self.output_type in sqlr.REQUEST_TYPES and self.parents is not None) or self.output_type in f_simi.REQUEST_TYPES:
             for i in range(len(self.output)):
                 self.output_text += f'{self.output[i]}_({self.parents[i]})\n'
@@ -199,8 +208,9 @@ class MainUI(QMainWindow):
             for output_line in self.output:
                 self.output_text += str(output_line) + '\n'
         self.output_textedit.setText(self.output_text)
-        self.parents = None
+        #self.parents = None
 
+    # Prompts sser to save output field in a directory of their choosing
     def save_output(self):
         output_path, _ = QFileDialog.getSaveFileName(
                         self,
@@ -211,6 +221,7 @@ class MainUI(QMainWindow):
         with open(output_path, 'w') as file:
             file.write(self.output_text)
 
+    # Replaces input filed with last generated output, ignores if any parent data is present
     def set_output_to_input(self):
         print('Filling input box with output results')
         input_text_string = ''
@@ -218,6 +229,7 @@ class MainUI(QMainWindow):
             input_text_string += str(input_line) + '\n'
         self.input_textedit.setText(input_text_string)
 
+    # Prompts user to save a *.csv similarity table
     def output_similarity_table(self):
         output_path, _ = QFileDialog.getSaveFileName(
                 self,
@@ -227,6 +239,7 @@ class MainUI(QMainWindow):
                 )
         f_simi.save_similarity_table(self.similarity_df, output_path)
 
+    # Once the user runs the BGC-PFam-similarity, the option to generate the similarity table *.csv is allowed
     def activate_similarity_button(self):
         self.similarity_button.setEnabled(True)
         self.similarity_button.setStyleSheet("border: 2px solid #4dd0e1; color: #4dd0e1")

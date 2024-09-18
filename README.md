@@ -2,7 +2,8 @@
 
 ---
 
-## Overview:
+## Overview
+
 A graphical user interface to easily access and output protein data.
 
 Extracts data from a 
@@ -15,16 +16,40 @@ For more information on generating the GNN see the
 Extracts [UniProt](https://www.uniprot.org/)
 data for a given protein Accession ID (or from a list of IDs).<sup>3</sup>
 
+
+---
+## Running, Installation, Packaging
+
+### Running the Program Directly from an Executable
+Provided in the `Distribution` directory are pre-packaged executables that can be download for the user's operating system of choice.
+
+### Manual Installation / Packaging
+
+An enviorment can be created with pipenv or conda using the provided Pipfile or requirements.txt
+
+#### Pipenv
+- Open terminal in directory containing the repository
+- Run `pipenv install`<br/>
+  - All required dependencies should then be installed<br/>
+- The program can then be run with `pipenv run python main.py`
+
+#### Packaging into an application (optional)
+If you would like to package your modified code into a single executable, pyinstaller is included in the dev-packages of the Pipfile
+- Open terminal in repositiory directory
+- Run `pipenv install -d`
+- Run `pyinstaller --windowed --onefile --add-data=ui_main_window.ui:./ --add-data=custom_ui_theme.xml:./ main.py`
+  - A Folder named `dist` will contain the packaged application
+
 ---
 ### Terminology:
 
-Query Accessions - The accessions used to generate the SQLite File
-<br> Note: The query accession is the same as the BGC ID, but will be referred to individually throughout
+Query Accessions - The accessions used to generate the SQLite File.
+<br> Note: The query accession is the same as the BGC ID, but will be referred to individually throughout.
 
 GNN - Genome Neighborhood Network
 
 ---
-## Input / Output Tables:
+## Input / Output Options:
 ### UniProt Requests:
 
 | Output             | Input           | Description                                     |
@@ -37,23 +62,23 @@ GNN - Genome Neighborhood Network
 ### BGC Requests:
 
 
-| Output                      | Input                                   | Description                                                                                                                     |
-|-----------------------------|-----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| PFam                        | BGC ID(s)                               | Gets the Associated PFam ID  **WIP**                                                                                            |
-| Query Accessions            | PFam ID(s)                              | Gets the Accessions IDs for the Query Input given                                                                               |
-| BGC ID                      | PFam ID(s)                              | Gets the BGC ID for the                                                                                                         |
-| BGC-PFam                    | BGC ID                                  | Gets the PFams for each of the proteins within the BGC                                                                          |
-| BGC-Accession               | BGC ID                                  | Gets the Accession IDs for each of the proteins within the BGC                                                                  |
-| Accessions from BGC by PFam | BGC ID(s)<br/> + PFam (Secondary Input) | Gets the Accession IDs for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(Cluster ID)' |
+| Output                      | Input                                             | Description                                                                                                                                                                                                                                |
+|-----------------------------|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Query Accession             | PFam ID(s)                                        | Gets the Query Accession IDs that correspond to their BGCs containing the given PFam ID(s)                                                                                                                                                 |
+| BGC ID                      | PFam ID(s)                                        | Gets the BGC ID(s) for those that contain the given PFam ID(s)                                                                                                                                                                             |
+| BGC-PFam                    | BGC ID                                            | Gets the PFams for each of the proteins within a single BGC                                                                                                                                                                                |
+| BGC-Accession               | BGC ID                                            | Gets the Accession IDs for each of the proteins within a single BGC                                                                                                                                                                        |
+| Accessions from BGC by PFam | BGC ID(s)<br/> + PFam (Secondary Input)           | Gets the Accession IDs for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(BGC ID)'                                                                                                                |
+| BGC-PFam Similarity         | PFam ID(s)<br/> Optional: PFam in Secondary Input | Searches all BGCs for each given PFam ID, Displays as 'BGC_ID(number of PFams it contains from the given input list)'<br/>The `Secondary Input` can be used to limit the searched BGCs to those that contain this inputed secondary PFam ID |
 
 Notes: 
 1. The `Accessions from BGC by PFam` outputs as `Output Accession_(BGC ID)`,
-however if you use `Replace Input with Output`, only the Output Accession will be displayed
-2. If the input field is empty, BGCs that contain unannotated proteins will be considered
+however if you use `Replace Input with Output`, only the Output Accession will be displayed.
+2. If the input field is empty, BGCs that contain unannotated proteins will be considered.
 
 ---
 ## BGC Request:
-- Click the `Upload` button to select your GNN *.sqlite file.
+- Click the `Upload` button to select your GNN *.sqlite file
 - Change the Request Type to `BGC`
 - Select your desired output (See **BGC Requests** above for guidance)
 - Fill the left text field, labelled 'Input', with respective input
@@ -100,7 +125,7 @@ Simply click `Save` and a window will appear allowing you select the directory y
 
 ### Example 2:
 
-You have a GNN of query accessions, you want to compare a target BGC to the rest by comparing PFams.
+You have a GNN of query accessions, you want to compare a target BGC to the other BGCs by comparing PFams.
 #### 1. Getting PFams of a BGC
 1. Upload the GNN
 2. Select `BGC` as the `Request Type`
@@ -111,10 +136,17 @@ You have a GNN of query accessions, you want to compare a target BGC to the rest
 
 #### 2. Creating a BGC Similarity Table
 1. Click `Replace Input with Output`
-2. Click `Output Similarity Table`
-   1. A file will be outputed `similarity.csv` to the program directory
+2. Select `BGC-PFam-Similarity` as the `Output Type`
+3. Click `Search`
+   1. Displayed are the BGC-IDs with their number of PFams they contain from the given list
+4. Click `Output Similarity Table`
+   1. You will be prompted to save the *.csv file
+   2. The *.csv file provides the searched BGC IDs and whether or not they contain the given PFam ID(s)
 
 Note: You may skip the part 1 and simply enter the PFams you wish to compare all BGCs
+
+Note: When searching in part 2, you may enter a PFam into the `secondary input` to limit the BGCs search to those
+that at lease contain that given PFam
 
 ---
 

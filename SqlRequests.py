@@ -16,13 +16,16 @@ def get_output(sql_file, search_index, search_type, secondary_input):
 
     #print(f"Search Type is: {search_type} and Search Index is: {search_index}")
 
+    # Checks if input field is a list of values or just a single value followed by blank lines
     if len(search_index) > 1:
         if search_index[1] == '':
             search_index = search_index[0]
 
+    # If accessions are being searched in a list, then mark then as such
     if search_type == 'Accession' and isinstance(search_index, list):
         search_type = "L_" + search_type
 
+    # Handles what output type selected for sql requests
     match search_type:
         case 'Accession':
             print('Searching by Individual Pfam')
@@ -44,7 +47,7 @@ def get_output(sql_file, search_index, search_type, secondary_input):
 
     return output, parents
 
-
+# Gets BGC ID or Query Accession associated with a SINGLE PFam
 def parent_accessions_from_pfam(_sql_path, pfam):
     pfam = f"%{pfam}%"
     conn = sqlite3.connect(_sql_path)
@@ -55,7 +58,7 @@ def parent_accessions_from_pfam(_sql_path, pfam):
     conn.close()
     return [row[0] for row in results]
 
-
+# Gets BGC ID or Query Accession associated with a LIST PFam
 def parent_accessions_from_input_list(_sql_path, input_list):
     # Connects to Sqlite file
     conn = sqlite3.connect(_sql_path)
@@ -79,14 +82,16 @@ def parent_accessions_from_input_list(_sql_path, input_list):
     return sorted(matches)
 
 
+# Gets accession IDs of all proteins in a given BGC
 def accessions_in_cluster(search_input):
     return get_query_results(get_bgc_accessions_from_parent_accession, search_input)
 
-
+# Gets PFam IDs of all proteins in a given BGC
 def pfams_in_cluster(search_input):
     return get_query_results(get_bgc_pfams_from_parent_accession, search_input)
 
 
+# Handles BGC requests for listing PFam or Accession IDs
 def get_query_results(query_input, element):
     conn = sqlite3.connect(SQL_FILE_PATH)
     cur = conn.cursor()
@@ -98,6 +103,7 @@ def get_query_results(query_input, element):
     return [row[0] for row in results]
 
 
+# Gets Accessions associated with a PFam within a given list of BGCs
 def bgc_acc_from_parent_and_family(_sql_path, input_list, pfam_input):
     conn = sqlite3.connect(_sql_path)
     cur = conn.cursor()
@@ -117,6 +123,7 @@ def bgc_acc_from_parent_and_family(_sql_path, input_list, pfam_input):
     conn.close()
     return matches, parents
 
+# SQL Code Requests
 
 get_accession_from_family = """
     SELECT DISTINCT attributes.accession

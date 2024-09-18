@@ -2,7 +2,7 @@ import requests
 
 REQUEST_TYPES = ['FASTA', 'GenBankID', 'GenBank_Protein_ID', 'GenBank_ORF_ID']
 
-
+# Handles uniprot requests made by user
 def uniprot_request_v2(protein_aID, parent=None, request_type=None):
 	print(protein_aID)
 	url = 'https://rest.uniprot.org/uniprotkb/' + protein_aID + '?format=json'
@@ -29,9 +29,3 @@ def uniprot_request_v2(protein_aID, parent=None, request_type=None):
 			else:
 				return f">{protein_aID}_({parent})\n{fasta}"
 
-# Testing
-'''
-protein_accession = 'A0A5E9UHV6'
-gene_bank_id, gene_bank_name, fasta = uniprot_request(protein_accession)
-print(gene_bank_id)
-'''
