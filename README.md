@@ -21,7 +21,7 @@ data for a given protein Accession ID (or from a list of IDs).<sup>3</sup>
 ## Running, Installation, Packaging
 
 ### Running the Program Directly from an Executable
-Provided in the `Distribution` directory are pre-packaged executables that can be download for the user's operating system of choice.
+Provided in the `dist` directory are pre-packaged executables that can be download for the user's operating system of choice.
 
 ### Manual Installation / Packaging
 
