@@ -33,10 +33,18 @@ An enviorment can be created with pipenv or conda using the provided Pipfile or 
   - All required dependencies should then be installed<br/>
 - The program can then be run with `pipenv run python main.py`
 
+#### Conda
+- Open terminal in directory containing the repository
+- Create a conda enviorment `conda create -n env_name python=3.10 pip`
+- Activate enviorment `conda activate env_name`
+- Install Requirements `pip install -r requirements.txt`
+- Run the program `python main.py`
+
 #### Packaging into an application (optional)
 If you would like to package your modified code into a single executable, pyinstaller is included in the dev-packages of the Pipfile
 - Open terminal in repositiory directory
 - Run `pipenv install -d`
+  - Note: If you are using a conda enviorment, you have to manually install pyinstaller `pip install pyinstaller`
 - Run `pyinstaller --windowed --onefile --add-data=ui_main_window.ui:./ --add-data=custom_ui_theme.xml:./ main.py`
   - A Folder named `dist` will contain the packaged application
 
@@ -120,8 +128,7 @@ Lastly, you would like the FASTA sequence for each of those proteins to compare.
    3. Some accession ID FASTAs may fail to be obtained due to their absence within UniProt
 
 
-Note: At anyone of these steps the Output can be saved to a text document.
-Simply click `Save` and a window will appear allowing you select the directory you would like to save the file.
+Note: At anyone of these steps the Output can be saved to a text document by clicking `Save`.
 
 ### Example 2:
 
