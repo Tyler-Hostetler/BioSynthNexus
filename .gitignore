@@ -1,6 +1,5 @@
 .idea/
 build/
-dist/
 similarity.csv
 main.spec
 BioSynthNexus.spec
