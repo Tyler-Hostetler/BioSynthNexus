@@ -20,12 +20,13 @@ data for a given protein Accession ID (or from a list of IDs).<sup>3</sup>
 ---
 ## Running, Installation, Packaging
 
-### Running the Program Directly from an Executable
-Provided in the `dist` directory are pre-packaged executables that can be download for the user's operating system of choice.
+### Running the Program Directly from an Executable (no dependecies needed)
+Provided in the `dist` directory are pre-packaged executables that can be run uding a simple double-click and moved to your preferred location..
 
 ### Manual Installation / Packaging
 
-An enviorment can be created with pipenv or conda using the provided Pipfile or requirements.txt
+An enviornment can be created with pipenv or conda using the provided Pipfile or requirements.txt. 
+You must have pipenv or conda/miniconda/etc installed to utilize these options, which may require additional steps.
 
 #### Pipenv
 - Open terminal in directory containing the repository
@@ -35,16 +36,16 @@ An enviorment can be created with pipenv or conda using the provided Pipfile or 
 
 #### Conda
 - Open terminal in directory containing the repository
-- Create a conda enviorment `conda create -n env_name python=3.10 pip`
-- Activate enviorment `conda activate env_name`
+- Create a conda enviornment `conda create -n env_name python=3.10 pip`
+- Activate enviornment `conda activate env_name`
 - Install Requirements `pip install -r requirements.txt`
 - Run the program `python main.py`
 
 #### Packaging into an application (optional)
 If you would like to package your modified code into a single executable, pyinstaller is included in the dev-packages of the Pipfile
-- Open terminal in repositiory directory
+- Open terminal in repository directory
 - Run `pipenv install -d`
-  - Note: If you are using a conda enviorment, you have to manually install pyinstaller `pip install pyinstaller`
+  - Note: If you are using a conda enviornment, you have to manually install pyinstaller `pip install pyinstaller`
 - Run `pyinstaller --windowed --onefile --add-data=ui_main_window.ui:./ --add-data=custom_ui_theme.xml:./ main.py`
   - A Folder named `dist` will contain the packaged application
 
@@ -70,14 +71,14 @@ GNN - Genome Neighborhood Network
 ### BGC Requests:
 
 
-| Output                      | Input                                             | Description                                                                                                                                                                                                                                |
-|-----------------------------|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Query Accession             | PFam ID(s)                                        | Gets the Query Accession IDs that correspond to their BGCs containing the given PFam ID(s)                                                                                                                                                 |
-| BGC ID                      | PFam ID(s)                                        | Gets the BGC ID(s) for those that contain the given PFam ID(s)                                                                                                                                                                             |
-| BGC-PFam                    | BGC ID                                            | Gets the PFams for each of the proteins within a single BGC                                                                                                                                                                                |
-| BGC-Accession               | BGC ID                                            | Gets the Accession IDs for each of the proteins within a single BGC                                                                                                                                                                        |
-| Accessions from BGC by PFam | BGC ID(s)<br/> + PFam (Secondary Input)           | Gets the Accession IDs for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(BGC ID)'                                                                                                                |
-| BGC-PFam Similarity         | PFam ID(s)<br/> Optional: PFam in Secondary Input | Searches all BGCs for each given PFam ID, Displays as 'BGC_ID(number of PFams it contains from the given input list)'<br/>The `Secondary Input` can be used to limit the searched BGCs to those that contain this inputed secondary PFam ID |
+| Output                      | Input                                             | Description                                                                                                                                                                                                                          |
+|-----------------------------|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Query Accession             | PFam ID(s)                                        | Gets the Query Accession IDs that correspond to their BGCs containing the given PFam ID(s)                                                                                                                                           |
+| BGC ID                      | PFam ID(s)                                        | Gets the BGC ID(s) for those that contain the given PFam ID(s)                                                                                                                                                                       |
+| BGC-PFam                    | BGC ID                                            | Gets the PFams for each of the proteins within a single BGC                                                                                                                                                                          |
+| BGC-Accession               | BGC ID                                            | Gets the Accession IDs for each of the proteins within a single BGC                                                                                                                                                                  |
+| Accessions from BGC by PFam | BGC ID(s)<br/> + PFam (Secondary Input)           | Gets the Accession IDs for the protein within each BGC with the selected PFam </br> Displays as 'Output Accession_(BGC ID)'                                                                                                          |
+| BGC-PFam Similarity         | PFam ID(s)<br/> Optional: PFam in Secondary Input | Searches all BGCs for each given PFam ID, Displays as 'BGC_ID(number of PFams it contains from the given input list)'<br/>The `Secondary Input` can be used to limit the searched BGCs to those that contain this secondary PFam ID  |
 
 Notes: 
 1. The `Accessions from BGC by PFam` outputs as `Output Accession_(BGC ID)`,
@@ -89,9 +90,9 @@ however if you use `Replace Input with Output`, only the Output Accession will b
 - Click the `Upload` button to select your GNN *.sqlite file
 - Change the Request Type to `BGC`
 - Select your desired output (See **BGC Requests** above for guidance)
-- Fill the left text field, labelled 'Input', with respective input
+- Fill the left text field, labeled 'Input', with respective input
 - Click `Search`
-- Output will be displayed in the right text field, labelled 'Output'
+- Output will be displayed in the right text field, labeled 'Output'
 - The text in the Output Box can be used as an Input by utilizing the `Replace Input with Output` Button
 
 ---
@@ -104,13 +105,14 @@ Lastly, you would like the FASTA sequence for each of those proteins to compare.
 
 
 #### Get the BGCs that contain the PFam(s) of interest
-1. Upload the GNN generated for protein X
-2. Enter the PFam(s) into the input field
-3. Select `BGC ID` as the Output Type
-4. Click `Search`
+1. Start BioSynthNexus via one of the above methods
+2. Click the `Upload` button to open the file explorer window and select the GNN *.sqlite file generated for protein X
+3. Enter the PFam(s) into the input field
+4. Select `BGC ID` as the Output Type
+5. Click `Search`
    1. Displayed will be all BGCs that contain at least one protein associated with the given PFam
 
-#### Get the Accession IDs for each of proteins associated with an inputed PFam
+#### Get the Accession IDs for each of proteins associated with the specified PFam
 1. Click `Replace Input with Output`
 2. Enter your PFam into the `Secondary Input` Field
 3. Select `Accessions from BGC by PFam` as the Output Type
@@ -134,7 +136,7 @@ Note: At anyone of these steps the Output can be saved to a text document by cli
 
 You have a GNN of query accessions, you want to compare a target BGC to the other BGCs by comparing PFams.
 #### 1. Getting PFams of a BGC
-1. Upload the GNN
+1.Click the `Upload` button to open the file explorer window and select the GNN *.sqlite file generated for protein X
 2. Select `BGC` as the `Request Type`
 3. Select `BGC-PFam` as the `Output Type`
 4. Enter the BGC ID of interest in the input field
@@ -153,7 +155,7 @@ You have a GNN of query accessions, you want to compare a target BGC to the othe
 Note: You may skip the part 1 and simply enter the PFams you wish to compare all BGCs
 
 Note: When searching in part 2, you may enter a PFam into the `secondary input` to limit the BGCs search to those
-that at lease contain that given PFam
+that at least contain that given PFam
 
 ---
 
