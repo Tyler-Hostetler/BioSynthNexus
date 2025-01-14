@@ -56,12 +56,14 @@ class MainUI(QMainWindow):
 
         # Set Output Type Box to UniProt Options
         self.update_output_combo(0)
+        self.output_combo_view = self.output_type_combobox.view()
+        self.output_combo_view.setFixedWidth(300)
 
-        self.input_label.setText('Input: Accession ID')
-        self.output_label.setText('Output: FASTA Sequence')
+        self.input_label.setText('Input: UniProt Accession ID(s)')
+        self.output_label.setText('Output: FASTA-formatted Protein Sequence(s)')
 
         # Fill Request Types
-        self.request_type_combobox.addItems(['UniProt','BGC'])
+        self.request_type_combobox.addItems(['UniProt','Genome Neighborhood Network'])
 
         # Replace Input with Output Widget
         self.output_to_input_button = self.window.findChild(QPushButton, 'output_to_input_button')
@@ -110,35 +112,35 @@ class MainUI(QMainWindow):
 
         match output_type:
             case 'FASTA':
-                input_hint += 'Accession ID'
-                output_hint += 'FASTA Sequence'
-            case 'GenBankID':
-                input_hint += 'Accession ID'
-                output_hint += 'GenBank(EMBL) Genome ID'
-            case 'GenBank_Protein_ID':
-                input_hint += 'Accession ID'
-                output_hint += 'GenBank(EMBL) Protein ID'
-            case 'GenBank_ORF_ID':
-                input_hint += 'Accession ID'
-                output_hint += 'GenBank(EMBL) Gene Open Reading Frame (ORF) ID'
-            case 'Query Accession':
-                input_hint += 'PFam ID(s)'
-                output_hint += 'Query Accessions within BGCs that contain All Input PFam(s)'
-            case 'BGC ID':
-                input_hint += 'PFam ID(s)'
-                output_hint += 'BGCs that contain All Input PFam(s)'
-            case 'BGC - Pfam':
-                input_hint += 'BGC ID'
-                output_hint += 'PFam(s) found within given BGC'
-            case 'BGC - Accession':
-                input_hint += 'Accession ID(s) within given BGC'
-                output_hint += 'Query Accessions within BGCs that contain Input PFam(s)'
-            case 'Accessions from BGC by PFam':
-                input_hint += 'BGC IDs and PFam(Secondary Input)'
-                output_hint += 'Accession ID(s) of Proteins in given BGCs that contain given PFam <br>Accession_(BGC ID)'
-            case 'BGC-Pfam-Similarity':
-                input_hint += 'PFam ID(s)'
-                output_hint += 'BGC IDs and number of matching PFams'
+                input_hint += 'UniProt Accession ID(s)'
+                output_hint += 'FASTA-Formatted Protein Sequence(s)'
+            case 'Genome Accession ID in GenBank':
+                input_hint += 'UniProt Accession ID(s)'
+                output_hint += 'Genome Accession ID(s) annotated in GenBank'
+            case 'Protein Accession ID in GenBank':
+                input_hint += 'UniProt Accession ID(s)'
+                output_hint += 'Protein Accession ID(s) annotated in GenBank'
+            case 'ORF Name in Cooresponding Genome':
+                input_hint += 'UniProt Accession ID(s)'
+                output_hint += 'Open Reading Frame (ORF) Name in cooresponding genome annotated in GenBank'
+            case 'Parent Accession ID':
+                input_hint += 'Pfam ID(s) of Gene Neighbors'
+                output_hint += 'Parent Accessions within Neighborhoods that contain All given Pfam(s)'
+            case 'Genome Neighborhood ID':
+                input_hint += 'Pfam ID(s) of Gene Neighors'
+                output_hint += 'Genome Neighborhoods that contain All Inputted Pfam(s)'
+            case 'Genome Neighborhood Pfams':
+                input_hint += 'Individual Genome Neighborhood ID'
+                output_hint += 'Pfam(s) for each neighboring gene in given Genome Neighborhood'
+            case 'Genome Neighborhood Accessions':
+                input_hint += 'Individual Genome Neighborhood ID'
+                output_hint += 'Accession ID(s) for each neighboring gene in given Genome Neighborhood'
+            case 'Neighboring Gene Accessions by Pfam':
+                input_hint += 'Genome Neighborhood IDs and Pfam(Secondary Input)'
+                output_hint += 'Accession IDs of neighboring genes containing the specified Pfam ID <br>Accession ID_(Genome Neighborhood ID)'
+            case 'Genome Neighborhood Pfam Comparison':
+                input_hint += 'Pfam ID(s)<br>Optional: Pre-Filter with a Pfam (Secondary Input)'
+                output_hint += 'Genome Neighborhood ID_(Number of Matching Pfams)'
 
 
         self.input_label.setText(input_hint)
@@ -146,7 +148,7 @@ class MainUI(QMainWindow):
 
     # Prompts User to upload SQLITE File
     def sql_upload(self):
-        _sql_path = QFileDialog.getOpenFileName(self, 'Please Select Sqlite3 File')
+        _sql_path = QFileDialog.getOpenFileName(self, 'Please Select GNN SQLITE File')
         self.sql_path = _sql_path[0]
         print(f"Attempting to Open {self.sql_path}")
         self.status_label.setText('Selected: ' + os.path.basename(self.sql_path))

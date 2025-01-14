@@ -1,7 +1,7 @@
 import sqlite3
 
 
-REQUEST_TYPES = ['Query Accession', 'BGC ID', 'BGC - Pfam', 'BGC - Accession', 'Accessions from BGC by Pfam']
+REQUEST_TYPES = ['Parent Accession ID', 'Genome Neighborhood ID', 'Genome Neighborhood Pfams', 'Genome Neighborhood Accessions', 'Neighboring Gene Accessions by Pfam']
 SQL_FILE_PATH = None
 
 
@@ -11,7 +11,7 @@ def get_output(sql_file, search_index, search_type, secondary_input):
     output = None
     parents = None
 
-    if search_type in ['Query Accession','BGC ID']:
+    if search_type in ['Parent Accession ID','Genome Neighborhood ID']:
         search_type='Accession'
 
     #print(f"Search Type is: {search_type} and Search Index is: {search_index}")
@@ -35,13 +35,13 @@ def get_output(sql_file, search_index, search_type, secondary_input):
             output = parent_accessions_from_input_list(SQL_FILE_PATH, search_index)
         case 'PFam':
             print()
-        case 'BGC - Pfam':
+        case 'Genome Neighborhood Pfams':
             print('Search BGC by Parent Accession giving Pfams')
             output = pfams_in_cluster(search_index)
-        case 'BGC - Accession':
+        case 'Genome Neighborhood Accessions':
             print('Search BGC by Parent Accession, giving Accessions')
             output = accessions_in_cluster(search_index)
-        case 'Accessions from BGC by Pfam':
+        case 'Neighboring Gene Accessions by Pfam':
             print('Search Accessions by their parent accessions with a specific pfam')
             output, parents = bgc_acc_from_parent_and_family(SQL_FILE_PATH, search_index, secondary_input)
 

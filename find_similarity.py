@@ -2,7 +2,7 @@ from more_itertools import distinct_combinations
 import SqlRequests as sql
 import pandas as pd
 
-REQUEST_TYPES = ['BGC-Pfam-Similarity']
+REQUEST_TYPES = ['Genome Neighborhood Pfam Comparison']
 
 def output_table(sql_path, pfam_list, secondary_input):
     bgc_accessions = get_accessions_from_single_list(sql_path, [], secondary_input)[0] # Gets a list of BGC IDs to search through

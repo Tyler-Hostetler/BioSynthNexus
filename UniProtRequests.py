@@ -1,6 +1,6 @@
 import requests
 
-REQUEST_TYPES = ['FASTA', 'GenBankID', 'GenBank_Protein_ID', 'GenBank_ORF_ID']
+REQUEST_TYPES = ['FASTA', 'Genome Accession ID in GenBank', 'Protein Accession ID in GenBank', 'ORF Name in Cooresponding Genome']
 
 # Handles uniprot requests made by user
 def uniprot_request_v2(protein_aID, parent=None, request_type=None):
@@ -17,11 +17,11 @@ def uniprot_request_v2(protein_aID, parent=None, request_type=None):
 			return 'Nothing Requested'
 		case 'ALL':
 			return gene_bank_id, gene_bank_name, fasta
-		case "GenBankID":
+		case "Genome Accession ID in GenBank":
 			return gene_bank_id
-		case "GenBank_Protein_ID":
+		case "Protein Accession ID in GenBank":
 			return gene_bank_name
-		case "GenBank_ORF_ID":
+		case "ORF Name in Cooresponding Genome":
 			return gene_orf_id
 		case "FASTA":
 			if parent is None:
