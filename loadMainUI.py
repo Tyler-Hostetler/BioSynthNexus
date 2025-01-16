@@ -120,14 +120,14 @@ class MainUI(QMainWindow):
             case 'Protein Accession ID in GenBank':
                 input_hint += 'UniProt Accession ID(s)'
                 output_hint += 'Protein Accession ID(s) annotated in GenBank'
-            case 'ORF Name in Cooresponding Genome':
+            case 'ORF Name in Corresponding Genome':
                 input_hint += 'UniProt Accession ID(s)'
-                output_hint += 'Open Reading Frame (ORF) Name in cooresponding genome annotated in GenBank'
+                output_hint += 'Open Reading Frame (ORF) Name in corresponding genome annotated in GenBank'
             case 'Parent Accession ID':
                 input_hint += 'Pfam ID(s) of Gene Neighbors'
                 output_hint += 'Parent Accessions within Neighborhoods that contain All given Pfam(s)'
             case 'Genome Neighborhood ID':
-                input_hint += 'Pfam ID(s) of Gene Neighors'
+                input_hint += 'Pfam ID(s) of Gene Neighbors'
                 output_hint += 'Genome Neighborhoods that contain All Inputted Pfam(s)'
             case 'Genome Neighborhood Pfams':
                 input_hint += 'Individual Genome Neighborhood ID'
@@ -173,14 +173,19 @@ class MainUI(QMainWindow):
         # UniProt Requests
         elif self.output_type in upr.REQUEST_TYPES:
             for index, element in enumerate(self.input):
-                if self.parents is None:    # Checks if user is using accessions that aren't considered BGC IDs
-                    _parents = None         
-                elif element == '':
+
+                if element == '':
+                    print('Empty')
                     continue
+
+                if self.parents is None:    # Checks if user is using accessions that aren't considered BGC IDs
+                    _parents = None
                 else:
                     _parents = self.parents[index]
+
+
                 try:
-                    temp_output.append(upr.uniprot_request_v2(element, _parents, self.output_type))
+                    temp_output.append(upr.uniprot_request(element, _parents, self.output_type))
                 except:
                     print(f"Request Failed for {element}")
                     continue
